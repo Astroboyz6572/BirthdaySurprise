@@ -895,33 +895,91 @@
        สามารถเพิ่มระบบภายหลังได้
     ====================================================== */
 
-    function sendReply() {
+    ```javascript
+async function sendReply() {
 
-        const message =
-            document.getElementById("reply").value;
+    // ==========================================
+    // ใส่ Web App URL ของ Google Apps Script ตรงนี้
+    // ==========================================
 
-
-        if (
-            selectedRating === 0 &&
-            message.trim() === ""
-        ) {
-
-            alert("อย่าลืมให้คะแนนหรือเขียนข้อความนะ 💗");
-
-            return;
-
-        }
+    const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbzBIDbi6U0Clhqnblyq9J1RPF-yNxLlz0l7NLyg4fUcRHAUhVW4_eRRxsXpI-BgLy0M/exec";
 
 
-        document.getElementById("thankYou")
-            .style.display = "block";
+    // ==========================================
+    // รับข้อความจากช่องข้อความ
+    // ==========================================
+
+    const message =
+        document.getElementById("reply").value.trim();
 
 
-        console.log("คะแนน:", selectedRating);
+    // ==========================================
+    // ตรวจสอบว่ากดให้คะแนนหรือยัง
+    // ==========================================
 
-        console.log("ข้อความ:", message);
+    if (selectedRating === 0) {
+
+        alert("อย่าลืมให้คะแนนเค้าก่อนนะคับ 🥺❤️");
+
+        return;
+    }
+
+
+    // ==========================================
+    // ส่งข้อมูลไป Google Sheets
+    // ==========================================
+
+    try {
+
+        await fetch(SCRIPT_URL, {
+
+            method: "POST",
+
+            mode: "no-cors",
+
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+
+            body: JSON.stringify({
+
+                rating: selectedRating,
+
+                message: message
+
+            })
+
+        });
+
+
+        // ======================================
+        // เมื่อส่งสำเร็จ
+        // ======================================
+
+        alert(
+            "ขอบคุณสำหรับคำตอบนะคับ 🥺❤️\n" +
+            "เค้าดีใจมากเลยที่เธอเข้ามาดูเซอร์ไพรส์ของเค้า"
+        );
+
+
+        // ล้างช่องข้อความ
+        document.getElementById("reply").value = "";
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "เหมือนจะส่งไม่สำเร็จนะคับ 🥺\n" +
+            "ลองกดส่งอีกครั้งนะ"
+        );
 
     }
+}
+```
+
 
 </script>
 
